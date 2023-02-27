@@ -1,46 +1,70 @@
-import { PostAdd } from "@mui/icons-material";
-import { Button, Paper } from "@mui/material";
-import { useState } from "react";
-import { docsStateType } from "../types";
-import AddFile from "./AddFile";
+import { PostAdd, RemoveCircleOutlined, Edit } from "@mui/icons-material";
+import { Button, IconButton, Paper } from "@mui/material";
+import FileModal from "./FileModal";
+import { TypedUseSelectorHook, useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "../redux/store";
+import { toggleModal, deleteDocument, editDocument, openDocument } from "../redux/DocsSlice";
 
 function Docs() {
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [state, setState] = useState<docsStateType>({
-    current: { id: 0, title: "", content: "" },
-    docs: [
-      { id: 1, title: "tghjtj", content: "okihn njfnjih jnjn" },
-      { id: 2, title: "tghjtj", content: "okihn njfnjih jnjn" },
-      { id: 3, title: "tghjtj", content: "okihn njfnjih jnjn" },
-      { id: 4, title: "tghjtj", content: "okihn njfnjih jnjn" },
-      { id: 5, title: "tghjtj", content: "okihn njfnjih jnjn" },
-    ],
-  });
+  const dispatch: AppDispatch = useDispatch();
+  const useAppSelector: TypedUseSelectorHook<RootState> = useSelector;
+  const docsState = useAppSelector((store) => store.docsSlice);
 
-  console.log(isModalOpen);
+  console.log(docsState);
+
   return (
     <div className="docs">
       <h1 className="docs__head">Docs Manager</h1>
       <Button
         onClick={() => {
-          setIsModalOpen(true);
+          dispatch(toggleModal(true));
         }}
         variant="contained"
         startIcon={<PostAdd />}
       >
         Add
       </Button>
-      <AddFile isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen} />
-      <div className="docs__wrapper">
-        {state.docs.map((ele) => {
-          return (
-            <Paper elevation={3} className="doc">
-              <h3>{ele.title}</h3>
-              <p>{ele.content}</p>
-            </Paper>
-          );
-        })}
-      </div>
+      <FileModal />
+      {docsState.docs.length > 0 ? (
+        <div className="docs__wrapper">
+          {docsState.docs.map((ele,i) => {
+            return (
+              <Paper key={ele.id} elevation={3} className="doc">
+                <div className="doc__head">
+                  <h3 className="doc__title" onClick={()=>{dispatch(openDocument(i))}}>{ele.title}</h3>
+                  <div className="doc__actions">
+                    <IconButton
+                      aria-label="edit"
+                      size="small"
+                      color="info"
+                      onClick={() => {
+                        dispatch(editDocument(i));
+                      }}
+                    >
+                      <Edit fontSize="small" />
+                    </IconButton>
+                    <IconButton
+                      aria-label="delete"
+                      size="small"
+                      color="error"
+                      onClick={() => {
+                        dispatch(deleteDocument(i));
+                      }}
+                    >
+                      <RemoveCircleOutlined fontSize="small" />
+                    </IconButton>
+                  </div>
+                </div>
+                <div className="doc__body">
+                  <p>{ele.content}</p>
+                </div>
+              </Paper>
+            );
+          })}
+        </div>
+      ) : (
+        <h2>No documents to display :(</h2>
+      )}
     </div>
   );
 }

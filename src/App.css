@@ -40,6 +40,19 @@ body {
 }
 
 .doc {
-    max-height: 60px;
     overflow: hidden;
+}
+
+.doc__head {
+    display: flex;
+    justify-content: space-between;
+    margin: 10px;
+}
+
+.doc__title {
+    margin: 0;
+}
+
+.doc__body {
+    display: none;
 }
