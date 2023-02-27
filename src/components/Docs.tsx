@@ -3,12 +3,25 @@ import { Button, IconButton, Paper } from "@mui/material";
 import FileModal from "./FileModal";
 import { TypedUseSelectorHook, useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../redux/store";
-import { toggleModal, deleteDocument, editDocument, openDocument } from "../redux/DocsSlice";
+import { toggleModal, deleteDocument, editDocument, openDocument, updateDocuments } from "../redux/DocsSlice";
+import { useEffect } from "react";
 
 function Docs() {
   const dispatch: AppDispatch = useDispatch();
   const useAppSelector: TypedUseSelectorHook<RootState> = useSelector;
   const docsState = useAppSelector((store) => store.docsSlice);
+
+  useEffect(()=>{
+    let docs=localStorage.getItem('docs');
+    console.log(docs);
+    if(docs!==null){
+      dispatch(updateDocuments(JSON.parse(docs)))
+    } 
+  },[])
+
+  useEffect(()=>{
+    localStorage.setItem('docs',JSON.stringify(docsState.docs)) 
+  },[docsState.docs])
 
   console.log(docsState);
 
@@ -29,16 +42,17 @@ function Docs() {
         <div className="docs__wrapper">
           {docsState.docs.map((ele,i) => {
             return (
-              <Paper key={ele.id} elevation={3} className="doc">
+              <Paper key={ele.id} elevation={3} onClick={(e)=>{dispatch(openDocument(i));e.stopPropagation()}} className="doc">
                 <div className="doc__head">
-                  <h3 className="doc__title" onClick={()=>{dispatch(openDocument(i))}}>{ele.title}</h3>
+                  <h3 className="doc__title">{ele.title}</h3>
                   <div className="doc__actions">
                     <IconButton
                       aria-label="edit"
                       size="small"
                       color="info"
-                      onClick={() => {
+                      onClick={(e) => {
                         dispatch(editDocument(i));
+                        e.stopPropagation();
                       }}
                     >
                       <Edit fontSize="small" />
@@ -47,8 +61,9 @@ function Docs() {
                       aria-label="delete"
                       size="small"
                       color="error"
-                      onClick={() => {
+                      onClick={(e) => {
                         dispatch(deleteDocument(i));
+                        e.stopPropagation();
                       }}
                     >
                       <RemoveCircleOutlined fontSize="small" />

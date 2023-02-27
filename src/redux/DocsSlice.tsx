@@ -22,9 +22,13 @@ const docsSlice = createSlice({
     toggleModal: (state, action: PayloadAction<boolean>) => {
       state.isModalOpen = action.payload;
       state.modalPurpose='add'
+      state.current = { id: state.docs.length + 1, title: "", content: "" };
     },
     updateCurrentDoc: (state, action) => {
       Object.assign(state.current, action.payload);
+    },
+    updateDocuments:(state, action)=>{
+      state.docs=action.payload
     },
     openDocument:(state,action: PayloadAction<number>)=>{
       state.modalPurpose='view'
@@ -34,7 +38,7 @@ const docsSlice = createSlice({
     addDocument: (state) => {
       state.docs.push(state.current);
       state.current = { id: state.docs.length + 1, title: "", content: "" };
-      state.isModalOpen=false
+      state.isModalOpen=false;
     },
     editDocument: (state, action: PayloadAction<number>) => {
       state.modalPurpose='edit'
@@ -57,6 +61,7 @@ const docsSlice = createSlice({
 export const {
   toggleModal,
   updateCurrentDoc,
+  updateDocuments,
   openDocument,
   addDocument,
   editDocument,
