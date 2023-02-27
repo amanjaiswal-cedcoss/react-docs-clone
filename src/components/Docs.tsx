@@ -3,7 +3,7 @@ import { Button, IconButton, Paper } from "@mui/material";
 import FileModal from "./FileModal";
 import { TypedUseSelectorHook, useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../redux/store";
-import { toggleModal, deleteDocument, editDocument, openDocument, updateDocuments } from "../redux/DocsSlice";
+import {deleteDocument, editDocument, openDocument, updateDocuments, openModalToAdd } from "../redux/DocsSlice";
 import { useEffect } from "react";
 
 function Docs() {
@@ -11,26 +11,25 @@ function Docs() {
   const useAppSelector: TypedUseSelectorHook<RootState> = useSelector;
   const docsState = useAppSelector((store) => store.docsSlice);
 
+  // useEffect for getting values of any saved documents in local storage and updating the redux store
   useEffect(()=>{
     let docs=localStorage.getItem('docs');
-    console.log(docs);
     if(docs!==null){
       dispatch(updateDocuments(JSON.parse(docs)))
     } 
   },[])
 
+  // useEffect for updating any change in documents array to local Storage
   useEffect(()=>{
     localStorage.setItem('docs',JSON.stringify(docsState.docs)) 
   },[docsState.docs])
-
-  console.log(docsState);
 
   return (
     <div className="docs">
       <h1 className="docs__head">Docs Manager</h1>
       <Button
         onClick={() => {
-          dispatch(toggleModal(true));
+          dispatch(openModalToAdd());
         }}
         variant="contained"
         startIcon={<PostAdd />}

@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
-const initialState = {
+const initialState = { 
   current: { id: 0, title: "", content: "" },
   docs: [
     {
@@ -21,6 +21,9 @@ const docsSlice = createSlice({
   reducers: {
     toggleModal: (state, action: PayloadAction<boolean>) => {
       state.isModalOpen = action.payload;
+    },
+    openModalToAdd: (state) => {
+      state.isModalOpen = true;
       state.modalPurpose='add'
       state.current = { id: state.docs.length + 1, title: "", content: "" };
     },
@@ -60,6 +63,7 @@ const docsSlice = createSlice({
 
 export const {
   toggleModal,
+  openModalToAdd,
   updateCurrentDoc,
   updateDocuments,
   openDocument,
@@ -68,4 +72,5 @@ export const {
   updateDocument,
   deleteDocument,
 } = docsSlice.actions;
+
 export default docsSlice.reducer;

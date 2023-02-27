@@ -1,12 +1,9 @@
 import {
   Button,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
   FormControl,
   Input,
   InputLabel,
+  Modal,
   OutlinedInput,
 } from "@mui/material";
 import { TypedUseSelectorHook, useDispatch, useSelector } from "react-redux";
@@ -23,81 +20,85 @@ function FileModal() {
   const docsState = useAppSelector((store) => store.docsSlice);
 
   return (
-    <Dialog
+    <Modal
       open={docsState.isModalOpen}
       aria-describedby="alert-dialog-slide-description"
     >
+      {/* if the user clicked on any doc  that is (modalPurpose === 'view') ,then only content is displayed without any functionality to edit */}
       {docsState.modalPurpose === "view" ? (
-        <>
-          <DialogContent>
-            <div>
-              <h3>{docsState.current.title}</h3>
-              <p>{docsState.current.content}</p>
-            </div>
-          </DialogContent>
-          <DialogActions>
-            <Button
-              variant="contained"
-              onClick={() => {
-                dispatch(toggleModal(false));
-              }}
-            >
-              Close
-            </Button>
-          </DialogActions>
-        </>
+        <div className="modal">
+          <h3>{docsState.current.title}</h3>
+          <p>{docsState.current.content}</p>
+          <div className="modal__actions"><Button
+            variant="contained"
+            onClick={() => {
+              dispatch(toggleModal(false));
+            }}
+          >
+            Close
+          </Button>
+          </div>
+        </div>
       ) : (
-        <>
-          <DialogTitle>{"Fill in the details of file"}</DialogTitle>
-          <DialogContent>
-            <form className="addfile__form">
-              <FormControl variant="standard">
-                <InputLabel htmlFor="title">Title</InputLabel>
-                <Input
-                  value={docsState.current.title}
-                  onChange={(e) => {
-                    dispatch(updateCurrentDoc({ title: e.target.value }));
-                  }}
-                />
-              </FormControl>
-              <FormControl variant="outlined">
-                <InputLabel htmlFor="details">Details</InputLabel>
-                <OutlinedInput
-                  label="Details"
-                  value={docsState.current.content}
-                  onChange={(e) => {
-                    dispatch(updateCurrentDoc({ content: e.target.value }));
-                  }}
-                  multiline
-                  rows={4}
-                />
-              </FormControl>
-            </form>
-          </DialogContent>
-          <DialogActions>
-            {docsState.modalPurpose === "add" ? (
+        /* if the user clicked on any add or edit button (modalPurpose !== 'add') ,then only content is displayed with the functionality to edit */
+        <div className="modal">
+          <h2>Fill in the details of file</h2>
+          <form className="modal__form">
+            <FormControl variant="standard" fullWidth>
+              <InputLabel htmlFor="title">Title</InputLabel>
+              <Input
+                value={docsState.current.title}
+                onChange={(e) => {
+                  dispatch(updateCurrentDoc({ title: e.target.value }));
+                }}
+              />
+            </FormControl>
+            <FormControl variant="outlined" fullWidth>
+              <InputLabel htmlFor="details">Details</InputLabel>
+              <OutlinedInput
+                size="small"
+                label="Details"
+                value={docsState.current.content}
+                onChange={(e) => {
+                  dispatch(updateCurrentDoc({ content: e.target.value }));
+                }}
+                multiline
+                rows={5}
+              />
+            </FormControl>
+            <div className="modal__actions">
               <Button
                 variant="contained"
                 onClick={() => {
-                  dispatch(addDocument());
+                  dispatch(toggleModal(false));
                 }}
               >
-                Submit
+                Close
               </Button>
-            ) : (
-              <Button
-                variant="contained"
-                onClick={() => {
-                  dispatch(updateDocument());
-                }}
-              >
-                Update
-              </Button>
-            )}
-          </DialogActions>
-        </>
+              {docsState.modalPurpose === "add" ? (
+                <Button
+                  variant="contained"
+                  onClick={() => {
+                    dispatch(addDocument());
+                  }}
+                >
+                  Submit
+                </Button>
+              ) : (
+                <Button
+                  variant="contained"
+                  onClick={() => {
+                    dispatch(updateDocument());
+                  }}
+                >
+                  Update
+                </Button>
+              )}
+            </div>
+          </form>
+        </div>
       )}
-    </Dialog>
+    </Modal>
   );
 }
 
