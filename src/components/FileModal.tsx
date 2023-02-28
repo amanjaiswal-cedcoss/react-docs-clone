@@ -51,6 +51,7 @@ function FileModal() {
                 onChange={(e) => {
                   dispatch(updateCurrentDoc({ title: e.target.value }));
                 }}
+                autoFocus
               />
             </FormControl>
             <FormControl variant="outlined" fullWidth>

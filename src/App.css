@@ -35,7 +35,7 @@ body {
     position: absolute;
     left: 50%;
     top: 50%;
-    transform: translate(-50%,-50%);
+    transform: translate(-50%, -50%);
 }
 
 .modal__form {
@@ -61,14 +61,18 @@ body {
     cursor: pointer;
 }
 
+.doc__actions {
+    text-align: right;
+}
+
 .doc__head {
-    display: flex;
-    justify-content: space-between;
     margin: 10px;
 }
 
 .doc__title {
     margin: 0;
+    overflow: hidden;
+    max-height: 28px;
 }
 
 .doc__body {

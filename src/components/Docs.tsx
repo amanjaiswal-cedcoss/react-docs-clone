@@ -11,6 +11,8 @@ function Docs() {
   const useAppSelector: TypedUseSelectorHook<RootState> = useSelector;
   const docsState = useAppSelector((store) => store.docsSlice);
 
+  console.log(docsState.current)
+
   // useEffect for getting values of any saved documents in local storage and updating the redux store
   useEffect(()=>{
     let docs=localStorage.getItem('docs');
@@ -42,9 +44,7 @@ function Docs() {
           {docsState.docs.map((ele,i) => {
             return (
               <Paper key={ele.id} elevation={3} onClick={(e)=>{dispatch(openDocument(i));e.stopPropagation()}} className="doc">
-                <div className="doc__head">
-                  <h3 className="doc__title">{ele.title}</h3>
-                  <div className="doc__actions">
+                <div className="doc__actions">
                     <IconButton
                       aria-label="edit"
                       size="small"
@@ -68,6 +68,8 @@ function Docs() {
                       <RemoveCircleOutlined fontSize="small" />
                     </IconButton>
                   </div>
+                <div className="doc__head">
+                  <h3 className="doc__title">{ele.title}</h3>
                 </div>
                 <div className="doc__body">
                   <p>{ele.content}</p>
